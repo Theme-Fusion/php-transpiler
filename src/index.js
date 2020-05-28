@@ -32,6 +32,11 @@ var Visitors = {
   'block': require('./visitor/generic'),
   'call': require('./visitor/call'),
   'for': require('./visitor/for'),
+  'foreach': require('./visitor/foreach'),
+  'offsetlookup': require('./visitor/offsetlookup'),
+  'array': require('./visitor/array'),
+  'empty': require('./visitor/empty'),
+  'unset': require('./visitor/unset'),
   'pre': require('./visitor/pre'),
   'post': require('./visitor/post'),
   'retif': require('./visitor/retif'),
@@ -193,11 +198,16 @@ AST.register('variable', require('./ast/variable'));
 AST.register('bin', require('./ast/bin'));
 AST.register('function', require('./ast/function'));
 AST.register('unsupported', require('./ast/unsupported'));
+AST.register('offsetlookup', require('./ast/offsetlookup'));
+AST.register('array', require('./ast/array'));
 AST.register('return', require('./ast/return'));
 AST.register('doc', require('./ast/doc'));
 AST.register('if', require('./ast/if'));
 AST.register('block', require('./ast/block'));
 AST.register('for', require('./ast/for'));
+AST.register('foreach', require('./ast/foreach'));
+AST.register('empty', require('./ast/empty'));
+AST.register('unset', require('./ast/unset'));
 AST.register('generic', require('./ast/generic'));
 AST.register('retif', require('./ast/retif'));
 AST.register('include', require('./ast/include'));
