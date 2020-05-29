@@ -9,6 +9,8 @@
  * Visits the echo/print node
  */
 module.exports = function (node, state, output) {
-  state.scope().variable(node.name);
+  if ( !( state.scopes.length === 1 && 'this' === node.name ) ) {
+    state.scope().variable(node.name);
+  }
   output.append('variable', node);
 };

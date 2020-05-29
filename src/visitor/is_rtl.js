@@ -6,18 +6,13 @@
 'use strict';
 
 /**
- * Visits a (expr)->offset node
+ * Visits a custom node
  */
 module.exports = function (node, state, output) {
-  this.visit(
-    node.inner,
-    state,
+
     output.append('generic', {
-      pre: function() {
-          return ' (';
-      },
-      post: function() {
-          return ')';
-      }
-  })  );
+        post: function() {
+        return 'jQuery( \'body\' ).hasClass( \'rtl\' )';
+        }
+    })
 };

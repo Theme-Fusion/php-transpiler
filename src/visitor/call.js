@@ -28,7 +28,9 @@ module.exports = function (node, state, output) {
       );
     }
   } else if (node.what.kind === 'propertylookup') {
-    state.scope().variable(node.what.what.name);
+    if ( !( state.scopes.length === 1 && 'this' === node.what.what.name ) ) {
+      state.scope().variable(node.what.what.name);
+    }
     fnName = node.what.what.name;
     if (node.what.offset.kind === 'constref') {
       fnName += '.' + correctName( node.what.offset.name );

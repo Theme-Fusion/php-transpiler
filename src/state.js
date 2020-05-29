@@ -5,6 +5,7 @@
  */
 'use strict';
 
+var correctName = require('./correctName');
 // the scope class
 var Scope = require('./scope');
 
@@ -93,7 +94,7 @@ State.prototype.getFunction = function (name) {
     }
     this.functions[name] = {
       name: name,
-      cb: '$fn_' + name.replace(/\\/g, '_'),
+      cb: correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }
@@ -113,7 +114,7 @@ State.prototype.getClass = function (name) {
     }
     this.classes[name] = {
       name: name,
-      cb: '$cls_' + name.replace(/\\/g, '_'),
+      cb: correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }

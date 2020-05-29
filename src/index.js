@@ -55,6 +55,22 @@ var Visitors = {
 // List custom visitors
 var CustomVisitors = {
   'array_push': require('./visitor/array_push'),
+  'is_rtl': require('./visitor/is_rtl'),
+  'fusion_library': require('./visitor/fusion_library')
+};
+
+function isCustomVisit(node) {
+  var tmp = node;
+
+  while( tmp.what ) {
+    tmp = tmp.what;
+  }
+
+  if (tmp.name && tmp.name in CustomVisitors) {
+    return CustomVisitors[tmp.name];
+  }
+
+  return false;
 }
 
 /**
@@ -186,8 +202,7 @@ Transpiler.prototype.visit = function (node, state, output) {
       this.visit(node[i], state, output);
     }
   } else if (node && node.kind) {
-    var name = node.what && node.what.name;
-    var fn = node.kind in this.visitors ? this.visitors[node.kind] : CustomVisitors[name] || Visitors[node.kind];
+    var fn = node.kind in this.visitors ? this.visitors[node.kind] : isCustomVisit( node ) || Visitors[node.kind];
     if (typeof fn === 'function') {
       fn.apply(this, [node, state, output]);
     } else {
