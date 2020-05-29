@@ -19,7 +19,6 @@ var Unsupported = AST.extends(function(parent, node) {
  * Outputs the statement
  */
 Unsupported.prototype.toString = function (indent) {
-  console.log( this.node );
   return indent + '// Not supported "' + this.node.kind + '" at line ' + this.node.loc.start.line + ' \n';
 };
 

@@ -34,6 +34,10 @@ var Visitors = {
   'for': require('./visitor/for'),
   'foreach': require('./visitor/foreach'),
   'offsetlookup': require('./visitor/offsetlookup'),
+  'propertylookup': require('./visitor/propertylookup'),
+  'parenthesis': require('./visitor/parenthesis'),
+  'cast': require('./visitor/cast'),
+  'constref': require('./visitor/constref'),
   'array': require('./visitor/array'),
   'empty': require('./visitor/empty'),
   'unset': require('./visitor/unset'),
@@ -48,6 +52,10 @@ var Visitors = {
   'class': require('./visitor/class'),
   'property': require('./visitor/generic')
 };
+// List custom visitors
+var CustomVisitors = {
+  'array_push': require('./visitor/array_push'),
+}
 
 /**
  * Creates a new transpiler instance
@@ -178,7 +186,8 @@ Transpiler.prototype.visit = function (node, state, output) {
       this.visit(node[i], state, output);
     }
   } else if (node && node.kind) {
-    var fn = node.kind in this.visitors ? this.visitors[node.kind] : Visitors[node.kind];
+    var name = node.what && node.what.name;
+    var fn = node.kind in this.visitors ? this.visitors[node.kind] : CustomVisitors[name] || Visitors[node.kind];
     if (typeof fn === 'function') {
       fn.apply(this, [node, state, output]);
     } else {
@@ -208,7 +217,11 @@ AST.register('for', require('./ast/for'));
 AST.register('foreach', require('./ast/foreach'));
 AST.register('empty', require('./ast/empty'));
 AST.register('unset', require('./ast/unset'));
+AST.register('parenthesis', require('./ast/parenthesis'));
+AST.register('cast', require('./ast/cast'));
 AST.register('generic', require('./ast/generic'));
+AST.register('array_push', require('./ast/array_push'));
+AST.register('propertylookup', require('./ast/propertylookup'));
 AST.register('retif', require('./ast/retif'));
 AST.register('include', require('./ast/include'));
 AST.register('import', require('./ast/import'));

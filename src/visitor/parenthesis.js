@@ -10,8 +10,8 @@
  */
 module.exports = function (node, state, output) {
   this.visit(
-    [node.what, node.offset],
+    node.inner,
     state,
-    output.append('propertylookup')
+    output.append('parenthesis')
   );
 };

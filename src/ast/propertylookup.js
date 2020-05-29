@@ -8,20 +8,17 @@
 var Statement = require('./statement');
 
 /**
- * @constructor AST/JsArray
+ * @constructor AST/PropertyLookup
  */
-var JsArray = Statement.extends(function(parent) {
+var PropertyLookup = Statement.extends(function(parent) {
   Statement.apply(this, [parent]);
 });
 
 /**
  * Outputs the statement
  */
-JsArray.prototype.toString = function (indent) {
-    var items = this._nodes.map(function(node) {
-        return ' ' + node.toString(indent);
-    });
-  return '[' + items + ' ]';
+PropertyLookup.prototype.toString = function (indent) {
+    return this._nodes[0].toString(indent) + '.' + this._nodes[1].toString(indent);
 };
 
-module.exports = JsArray;
+module.exports = PropertyLookup;

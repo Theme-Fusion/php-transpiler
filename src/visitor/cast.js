@@ -9,9 +9,9 @@
  * Visits a (expr)->offset node
  */
 module.exports = function (node, state, output) {
-  this.visit(
-    [node.what, node.offset],
-    state,
-    output.append('propertylookup')
-  );
+   this.visit(
+       node.what,
+       state,
+       output.append('cast', node.type)
+   );
 };

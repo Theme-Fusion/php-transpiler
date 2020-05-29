@@ -4,14 +4,15 @@
  * @url http://glayzzle.com
  */
 'use strict';
+var correctName = require('../correctName');
 
 /**
  * Visits a (expr)->offset node
  */
 module.exports = function (node, state, output) {
-  this.visit(
-    [node.what, node.offset],
-    state,
-    output.append('propertylookup')
-  );
+    output.append('generic', {
+        post: function() {
+            return correctName(node.name);
+        }
+    })
 };

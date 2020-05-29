@@ -4,14 +4,13 @@
  * @url http://glayzzle.com
  */
 'use strict';
-
 /**
- * Visits a (expr)->offset node
+ * Visits a if node
  */
 module.exports = function (node, state, output) {
   this.visit(
-    [node.what, node.offset],
+    node.arguments,
     state,
-    output.append('propertylookup')
+    output.append('array_push')
   );
 };
