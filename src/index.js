@@ -13,7 +13,6 @@ var AST = require('./ast');
 var State = require('./state');
 // List generic visitors
 var Visitors = {
-  'array_push': require('./visitor/array_push'),
   'program': require('./visitor/program'),
   'namespace': require('./visitor/namespace'),
   'echo': require('./visitor/echo'),
@@ -68,6 +67,13 @@ var Transpiler = function (options) {
   if (options) {
     for(var k in options) {
       this[k] = options[k];
+    }
+  }
+
+  // Register custom AST
+  if ( this.customAST ) {
+    for( var ast in this.customAST ) {
+      AST.register( ast, this.customAST[ast] );
     }
   }
 
@@ -237,7 +243,6 @@ AST.register('unset', require('./ast/unset'));
 AST.register('parenthesis', require('./ast/parenthesis'));
 AST.register('cast', require('./ast/cast'));
 AST.register('generic', require('./ast/generic'));
-AST.register('array_push', require('./ast/array_push'));
 AST.register('propertylookup', require('./ast/propertylookup'));
 AST.register('retif', require('./ast/retif'));
 AST.register('include', require('./ast/include'));
