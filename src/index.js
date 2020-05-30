@@ -13,6 +13,7 @@ var AST = require('./ast');
 var State = require('./state');
 // List generic visitors
 var Visitors = {
+  'array_push': require('./visitor/array_push'),
   'program': require('./visitor/program'),
   'namespace': require('./visitor/namespace'),
   'echo': require('./visitor/echo'),
@@ -52,26 +53,6 @@ var Visitors = {
   'class': require('./visitor/class'),
   'property': require('./visitor/generic')
 };
-// List custom visitors
-var CustomVisitors = {
-  'array_push': require('./visitor/array_push'),
-  'is_rtl': require('./visitor/is_rtl'),
-  'fusion_library': require('./visitor/fusion_library')
-};
-
-function isCustomVisit(node) {
-  var tmp = node;
-
-  while( tmp.what ) {
-    tmp = tmp.what;
-  }
-
-  if (tmp.name && tmp.name in CustomVisitors) {
-    return CustomVisitors[tmp.name];
-  }
-
-  return false;
-}
 
 /**
  * Creates a new transpiler instance
@@ -86,7 +67,7 @@ var Transpiler = function (options) {
   // extends with options
   if (options) {
     for(var k in options) {
-      this[k] = options;
+      this[k] = options[k];
     }
   }
 
@@ -172,7 +153,10 @@ Transpiler.prototype.read = function (code, filename) {
  */
 Transpiler.prototype.generate = function (ast) {
   var output = new AST(this);
-  var state = new State();
+  var state = new State( this.correctName );
+  if ( this.correctName ) {
+    state.correctName = this.correctName;
+  }
   if (this.browser) {
     state.registerGlobal('console');
     state.registerGlobal('window');
@@ -193,6 +177,24 @@ Transpiler.generate = function(ast, options) {
 };
 
 /**
+ * Static helper
+ * @return {Object|Boolean}
+ */
+Transpiler.prototype.isCustomVisit = function (node) {
+  var tmp = node;
+
+  while( tmp.what ) {
+    tmp = tmp.what;
+  }
+
+  if (tmp.name && tmp.name in this.customVisitors) {
+    return this.customVisitors[tmp.name];
+  }
+
+  return false;
+}
+
+/**
  * Generic node visitor
  * @return void
  */
@@ -202,7 +204,7 @@ Transpiler.prototype.visit = function (node, state, output) {
       this.visit(node[i], state, output);
     }
   } else if (node && node.kind) {
-    var fn = node.kind in this.visitors ? this.visitors[node.kind] : isCustomVisit( node ) || Visitors[node.kind];
+    var fn = node.kind in this.visitors ? this.visitors[node.kind] : this.isCustomVisit( node ) || Visitors[node.kind];
     if (typeof fn === 'function') {
       fn.apply(this, [node, state, output]);
     } else {

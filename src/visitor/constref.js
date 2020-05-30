@@ -4,7 +4,6 @@
  * @url http://glayzzle.com
  */
 'use strict';
-var correctName = require('../correctName');
 
 /**
  * Visits a (expr)->offset node
@@ -12,7 +11,7 @@ var correctName = require('../correctName');
 module.exports = function (node, state, output) {
     output.append('generic', {
         post: function() {
-            return correctName(node.name);
+            return state.correctName(node.name);
         }
     })
 };

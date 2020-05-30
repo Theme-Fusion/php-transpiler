@@ -5,7 +5,6 @@
  */
 'use strict';
 
-var correctName = require('../correctName');
 /**
  * Visits the echo/print node
  */
@@ -33,7 +32,7 @@ module.exports = function (node, state, output) {
     }
     fnName = node.what.what.name;
     if (node.what.offset.kind === 'constref') {
-      fnName += '.' + correctName( node.what.offset.name );
+      fnName += '.' + state.correctName( node.what.offset.name );
     } else {
       throw new Error(
         'Unable to handle call offset from ' +

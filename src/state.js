@@ -5,7 +5,6 @@
  */
 'use strict';
 
-var correctName = require('./correctName');
 // the scope class
 var Scope = require('./scope');
 
@@ -37,6 +36,14 @@ var LIB_PREFIX = '$_';
 State.prototype.registerGlobal = function(name) {
   this.libraries[name] = name;
 };
+
+/**
+ * Return name override
+ */
+State.prototype.correctName = function(name) {
+  return name;
+};
+
 
 /**
  * Inject a list of libraries
@@ -94,7 +101,7 @@ State.prototype.getFunction = function (name) {
     }
     this.functions[name] = {
       name: name,
-      cb: correctName( name.replace(/\\/g, '') ),
+      cb: this.correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }
@@ -114,7 +121,7 @@ State.prototype.getClass = function (name) {
     }
     this.classes[name] = {
       name: name,
-      cb: correctName( name.replace(/\\/g, '') ),
+      cb: this.correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }
