@@ -9,19 +9,8 @@
  * Visits a offsetlookup node
  */
 module.exports = function (node, state, output) {
-  var tmp = node;
-  var toVisit = [];
-  while ( tmp ) {
-    if ( 'variable' === tmp.kind ) {
-      toVisit.unshift( tmp )
-    } else {
-      toVisit.unshift( tmp.offset )
-    }
-    tmp = tmp.what;
-  }
-
   this.visit(
-    toVisit,
+    [node.what, node.offset],
     state,
     output.append('offsetlookup')
   );
