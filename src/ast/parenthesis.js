@@ -8,20 +8,19 @@
 var Statement = require('./statement');
 
 /**
- * @constructor AST/JsArray
+ * @constructor AST/Parenthesis
  */
-var JsArray = Statement.extends(function(parent) {
+var Parenthesis = Statement.extends(function(parent) {
   Statement.apply(this, [parent]);
 });
 
 /**
  * Outputs the statement
  */
-JsArray.prototype.toString = function (indent) {
-    var items = this._nodes.map(function(node) {
-        return ' ' + node.toString(indent);
-    });
-  return '[' + items + ' ]';
+Parenthesis.prototype.toString = function (indent) {
+  return '( ' +
+    this._nodes[0].toString(indent) +
+    ' )';
 };
 
-module.exports = JsArray;
+module.exports = Parenthesis;

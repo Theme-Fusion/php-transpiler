@@ -34,6 +34,10 @@ var Visitors = {
   'for': require('./visitor/for'),
   'foreach': require('./visitor/foreach'),
   'offsetlookup': require('./visitor/offsetlookup'),
+  'propertylookup': require('./visitor/propertylookup'),
+  'parenthesis': require('./visitor/parenthesis'),
+  'cast': require('./visitor/cast'),
+  'constref': require('./visitor/constref'),
   'array': require('./visitor/array'),
   'empty': require('./visitor/empty'),
   'unset': require('./visitor/unset'),
@@ -62,7 +66,14 @@ var Transpiler = function (options) {
   // extends with options
   if (options) {
     for(var k in options) {
-      this[k] = options;
+      this[k] = options[k];
+    }
+  }
+
+  // Register custom AST
+  if ( this.customAST ) {
+    for( var ast in this.customAST ) {
+      AST.register( ast, this.customAST[ast] );
     }
   }
 
@@ -148,7 +159,10 @@ Transpiler.prototype.read = function (code, filename) {
  */
 Transpiler.prototype.generate = function (ast) {
   var output = new AST(this);
-  var state = new State();
+  var state = new State( this.correctName );
+  if ( this.correctName ) {
+    state.correctName = this.correctName;
+  }
   if (this.browser) {
     state.registerGlobal('console');
     state.registerGlobal('window');
@@ -169,6 +183,24 @@ Transpiler.generate = function(ast, options) {
 };
 
 /**
+ * Static helper
+ * @return {Object|Boolean}
+ */
+Transpiler.prototype.isCustomVisit = function (node) {
+  var tmp = node;
+
+  while( tmp.what ) {
+    tmp = tmp.what;
+  }
+
+  if (tmp.name && tmp.name in this.customVisitors) {
+    return this.customVisitors[tmp.name];
+  }
+
+  return false;
+}
+
+/**
  * Generic node visitor
  * @return void
  */
@@ -178,7 +210,7 @@ Transpiler.prototype.visit = function (node, state, output) {
       this.visit(node[i], state, output);
     }
   } else if (node && node.kind) {
-    var fn = node.kind in this.visitors ? this.visitors[node.kind] : Visitors[node.kind];
+    var fn = node.kind in this.visitors ? this.visitors[node.kind] : this.isCustomVisit( node ) || Visitors[node.kind];
     if (typeof fn === 'function') {
       fn.apply(this, [node, state, output]);
     } else {
@@ -208,7 +240,10 @@ AST.register('for', require('./ast/for'));
 AST.register('foreach', require('./ast/foreach'));
 AST.register('empty', require('./ast/empty'));
 AST.register('unset', require('./ast/unset'));
+AST.register('parenthesis', require('./ast/parenthesis'));
+AST.register('cast', require('./ast/cast'));
 AST.register('generic', require('./ast/generic'));
+AST.register('propertylookup', require('./ast/propertylookup'));
 AST.register('retif', require('./ast/retif'));
 AST.register('include', require('./ast/include'));
 AST.register('import', require('./ast/import'));

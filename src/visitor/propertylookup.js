@@ -10,17 +10,8 @@
  */
 module.exports = function (node, state, output) {
   this.visit(
-    node.what,
+    [node.what, node.offset],
     state,
-    output.append('generic', {
-      post: function() {
-        if (node.offsetkind === 'constref') {
-          return '.get(' + this.string(node.offset.name) + ')';
-        } else {
-          // @todo
-          return '[todo]';
-        }
-      }
-    })
+    output.append('propertylookup')
   );
 };

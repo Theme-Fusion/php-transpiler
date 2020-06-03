@@ -6,12 +6,12 @@
 'use strict';
 
 /**
- * Visits a offsetlookup node
+ * Visits a (expr)->offset node
  */
 module.exports = function (node, state, output) {
-  this.visit(
-    [node.what, node.offset],
-    state,
-    output.append('offsetlookup')
-  );
+   this.visit(
+       node.what,
+       state,
+       output.append('cast', node.type)
+   );
 };

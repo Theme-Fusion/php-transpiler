@@ -38,6 +38,14 @@ State.prototype.registerGlobal = function(name) {
 };
 
 /**
+ * Return name override
+ */
+State.prototype.correctName = function(name) {
+  return name;
+};
+
+
+/**
  * Inject a list of libraries
  */
 State.prototype.setLibrary = function(name) {
@@ -93,7 +101,7 @@ State.prototype.getFunction = function (name) {
     }
     this.functions[name] = {
       name: name,
-      cb: '$fn_' + name.replace(/\\/g, '_'),
+      cb: this.correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }
@@ -113,7 +121,7 @@ State.prototype.getClass = function (name) {
     }
     this.classes[name] = {
       name: name,
-      cb: '$cls_' + name.replace(/\\/g, '_'),
+      cb: this.correctName( name.replace(/\\/g, '') ),
       lookup: lookup
     };
   }
