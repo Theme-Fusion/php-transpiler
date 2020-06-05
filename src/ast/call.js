@@ -25,7 +25,7 @@ Call.prototype.toString = function (indent) {
       this._nodes[i].toString(indent)
     );
   }
-  var buffer = this.what + ' (' + args.join(', ') + ')';
+  var buffer = this.what + '(' + args.join(', ') + ')';
   if (this._parent instanceof Statement) {
     return buffer;
   } else {

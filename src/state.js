@@ -17,7 +17,7 @@ var reservedTypes = [
  * Current parsing state
  * @constructor State
  */
-var State = function () {
+var State = function ( names ) {
   this.namespace = '';
   this.function = '';
   this.class = '';
@@ -26,6 +26,7 @@ var State = function () {
   this.functions = {};
   this.classes = {};
   this.libraries = {};
+  this.names = names;
 };
 
 var LIB_PREFIX = '$_';
@@ -41,7 +42,7 @@ State.prototype.registerGlobal = function(name) {
  * Return name override
  */
 State.prototype.correctName = function(name) {
-  return name;
+  return this.names[ name ] || name;
 };
 
 

@@ -52,6 +52,23 @@ var Visitors = {
   'class': require('./visitor/class'),
   'property': require('./visitor/generic')
 };
+// List custom visitors
+var CustomVisitors = {
+  'is_rtl': require('./visitor/is_rtl'),
+  'fusion_library': require('./visitor/fusion_library'),
+  'array_push': require('./visitor/array_push'),
+  'Fusion_Builder_Box_Shadow_Helper': require('./visitor/fusion_builder_box_shadow_helper'),
+};
+// Names to be replaced.
+var ToReplace = {
+  'args': 'values',
+  'count': 'model.get(\'cid\')',
+  'base_selector': 'baseSelector',
+  'is_default': 'isDefault',
+  'add_css_property': 'addCssProperty',
+  'parse_css': 'parseCSS',
+  'Fusion_Sanitize': 'fusionSanitize',
+};
 
 /**
  * Creates a new transpiler instance
@@ -65,15 +82,8 @@ var Transpiler = function (options) {
 
   // extends with options
   if (options) {
-    for(var k in options) {
+    for (var k in options) {
       this[k] = options[k];
-    }
-  }
-
-  // Register custom AST
-  if ( this.customAST ) {
-    for( var ast in this.customAST ) {
-      AST.register( ast, this.customAST[ast] );
     }
   }
 
@@ -102,12 +112,12 @@ var Transpiler = function (options) {
 
   // HANDLE THE IMPORT STATEMENT
   var defaultStatement = this.parser.parser.read_statement;
-  this.parser.parser.read_statement = function() {
+  this.parser.parser.read_statement = function () {
     if (this.token === this.tok.T_IMPORT) {
       var node = this.node('import'), what, where;
       if (this.next().token === '*') {
         this.next().expect(this.tok.T_AS) &&
-        this.next().expect(this.tok.T_STRING);
+          this.next().expect(this.tok.T_STRING);
         what = this.text();
         this.next();
       } else if (this.token === '{') {
@@ -159,10 +169,8 @@ Transpiler.prototype.read = function (code, filename) {
  */
 Transpiler.prototype.generate = function (ast) {
   var output = new AST(this);
-  var state = new State( this.correctName );
-  if ( this.correctName ) {
-    state.correctName = this.correctName;
-  }
+  var state = new State( ToReplace );
+
   if (this.browser) {
     state.registerGlobal('console');
     state.registerGlobal('window');
@@ -178,7 +186,7 @@ Transpiler.prototype.generate = function (ast) {
  * Static helper
  * @return {String}
  */
-Transpiler.generate = function(ast, options) {
+Transpiler.generate = function (ast, options) {
   return (new Transpiler(options)).generate(ast);
 };
 
@@ -189,12 +197,12 @@ Transpiler.generate = function(ast, options) {
 Transpiler.prototype.isCustomVisit = function (node) {
   var tmp = node;
 
-  while( tmp.what ) {
+  while (tmp.what) {
     tmp = tmp.what;
   }
 
-  if (tmp.name && tmp.name in this.customVisitors) {
-    return this.customVisitors[tmp.name];
+  if (tmp.name && tmp.name in CustomVisitors) {
+    return CustomVisitors[tmp.name];
   }
 
   return false;
@@ -206,11 +214,11 @@ Transpiler.prototype.isCustomVisit = function (node) {
  */
 Transpiler.prototype.visit = function (node, state, output) {
   if (Array.isArray(node)) {
-    for(var i = 0; i < node.length; i++) {
+    for (var i = 0; i < node.length; i++) {
       this.visit(node[i], state, output);
     }
   } else if (node && node.kind) {
-    var fn = node.kind in this.visitors ? this.visitors[node.kind] : this.isCustomVisit( node ) || Visitors[node.kind];
+    var fn = node.kind in this.visitors ? this.visitors[node.kind] : this.isCustomVisit(node) || Visitors[node.kind];
     if (typeof fn === 'function') {
       fn.apply(this, [node, state, output]);
     } else {
@@ -251,6 +259,7 @@ AST.register('encapsed', require('./ast/encapsed'));
 AST.register('new', require('./ast/new'));
 AST.register('class', require('./ast/class'));
 AST.register('property', require('./ast/property'));
+AST.register('array_push', require('./ast/array_push'));
 
 // exports
 module.exports = Transpiler;
