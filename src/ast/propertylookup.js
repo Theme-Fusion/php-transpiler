@@ -18,7 +18,7 @@ var PropertyLookup = Statement.extends(function(parent) {
  * Outputs the statement
  */
 PropertyLookup.prototype.toString = function (indent) {
-    return this._nodes[0].toString(indent) + '.' + this._nodes[1].toString(indent);
+    return ' ' + this._nodes[0].toString(indent) + '.' + this._nodes[1].toString(indent);
 };
 
 module.exports = PropertyLookup;

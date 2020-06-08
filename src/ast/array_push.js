@@ -25,7 +25,7 @@ ArrayPush.prototype.toString = function ( indent ) {
     var first = 'yes';
     this._nodes.slice( 1 ).forEach( function( node ) {
         if ( ! first ) {
-            buffer += ', ';
+            buffer += ',';
         }
         buffer += node.toString( indent );
     } );

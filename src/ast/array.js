@@ -19,7 +19,7 @@ var JsArray = Statement.extends(function(parent) {
  */
 JsArray.prototype.toString = function (indent) {
     var items = this._nodes.map(function(node) {
-        return ' ' + node.toString(indent);
+        return node.toString(indent);
     });
   return '[' + items + ' ]';
 };
