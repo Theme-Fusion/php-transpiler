@@ -50,7 +50,9 @@ var Visitors = {
   'encapsed': require('./visitor/encapsed'),
   'new': require('./visitor/new'),
   'class': require('./visitor/class'),
-  'property': require('./visitor/generic')
+  'property': require('./visitor/generic'),
+  'unary': require('./visitor/unary'),
+
 };
 // List custom visitors
 var CustomVisitors = {
