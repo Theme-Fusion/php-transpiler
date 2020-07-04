@@ -60,6 +60,7 @@ var CustomVisitors = {
   'fusion_library': require('./visitor/fusion_library'),
   'array_push': require('./visitor/array_push'),
   'Fusion_Builder_Box_Shadow_Helper': require('./visitor/fusion_builder_box_shadow_helper'),
+  'class_exists': require('./visitor/class_exists'),
 };
 // Names to be replaced.
 var ToReplace = {
