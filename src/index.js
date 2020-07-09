@@ -52,7 +52,6 @@ var Visitors = {
   'class': require('./visitor/class'),
   'property': require('./visitor/generic'),
   'unary': require('./visitor/unary'),
-
 };
 // List custom visitors
 var CustomVisitors = {
@@ -61,6 +60,7 @@ var CustomVisitors = {
   'array_push': require('./visitor/array_push'),
   'Fusion_Builder_Box_Shadow_Helper': require('./visitor/fusion_builder_box_shadow_helper'),
   'class_exists': require('./visitor/class_exists'),
+  'strpos': require('./visitor/strpos'),
 };
 // Names to be replaced.
 var ToReplace = {
@@ -263,6 +263,7 @@ AST.register('new', require('./ast/new'));
 AST.register('class', require('./ast/class'));
 AST.register('property', require('./ast/property'));
 AST.register('array_push', require('./ast/array_push'));
+AST.register('strpos', require('./ast/strpos'));
 
 // exports
 module.exports = Transpiler;
